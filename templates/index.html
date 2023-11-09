@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wanderlust Travel Destinations</title>
+    <link rel="stylesheet" type="text/css" href="../static/styles.css">
+</head>
+<body>
+
+<h1>Wanderlust Travel Planner</h1>
+<div>
+
+    <button onclick="location.href='/';">Go to Index</button>
+    <button onclick="location.href='/add_itinerary';">Go to Itinerary</button>
+    <button onclick="location.href='/exp';">Go to Expenses</button>
+
+</div>
+
+
+<h2>Add a Destination</h2>
+<form action="/destinations" method="post">
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="name"><br><br>
+    <label for="description">Description:</label><br>
+    <input type="text" id="description" name="description"><br><br>
+    <label for="location">Location:</label><br>
+    <input type="text" id="location" name="location"><br><br>
+    <input type="submit" value="Add Destination">
+</form>
+
+<h2>Destinations</h2>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Location</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    <tbody id="destinations-list"></tbody>
+</table>
+
+<script>
+    // Fetch destinations from the Flask API
+    fetch('/destinations')
+        .then(response => response.json())
+        .then(data => {
+            const destinationsList = document.getElementById('destinations-list');
+            data.forEach(destination => {
+                const row = destinationsList.insertRow();
+                row.setAttribute("id", `row-${destination.id}`); // Set unique identifier
+                row.insertCell(0).innerHTML = destination.name;
+                row.insertCell(1).innerHTML = destination.description;
+                row.insertCell(2).innerHTML = destination.location;
+                row.insertCell(3).innerHTML = `<button onclick="editDestination(${destination.id})">Edit</button>`;
+                row.insertCell(4).innerHTML = `<button onclick="deleteDestination(${destination.id})">Delete</button>`;
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+function editDestination(id) {
+    // Find the row corresponding to the destination ID
+    const row = document.getElementById(`row-${id}`);
+    const name = row.cells[0].innerText;
+    const description = row.cells[1].innerText;
+    const location = row.cells[2].innerText;
+
+    // Generate input fields for editing
+    row.innerHTML = `
+        <td><input type="text" id="edit-name" value="${name}"></td>
+        <td><input type="text" id="edit-description" value="${description}"></td>
+        <td><input type="text" id="edit-location" value="${location}"></td>
+        <td><button onclick="saveEdit(${id})">Save</button></td>
+        <td><button onclick="cancelEdit(${id}, '${name}', '${description}', '${location}')">Cancel</button></td>
+    `;
+}
+
+function saveEdit(id) {
+    const updatedData = {
+        name: document.getElementById('edit-name').value,
+        description: document.getElementById('edit-description').value,
+        location: document.getElementById('edit-location').value
+    };
+
+    fetch(`/destinations/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data); // Log the response data
+        // Refresh the page or update the table with the new data
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function cancelEdit(id, name, description, location) {
+    // Restore the original data
+    const row = document.getElementById(`row-${id}`);
+    row.innerHTML = `
+        <td>${name}</td>
+        <td>${description}</td>
+        <td>${location}</td>
+        <td><button onclick="editDestination(${id})">Edit</button></td>
+        <td><button onclick="deleteDestination(${id})">Delete</button></td>
+    `;
+}
+
+
+    function deleteDestination(id) {
+        // Implement the logic for deleting a destination using the provided ID
+        fetch(`/destinations/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data); // Log the response data
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+</body>
+</html>

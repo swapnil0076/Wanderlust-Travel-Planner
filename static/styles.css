@@ -1,0 +1,66 @@
+body, html {
+  height: 100%;
+}
+body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+    background-image: url("https://c4.wallpaperflare.com/wallpaper/410/867/750/vector-forest-sunset-forest-sunset-forest-wallpaper-preview.jpg");
+      height: 50%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+}
+
+h1 {
+    text-align: center;
+    font-size: 2.5rem;
+}
+
+form {
+    width: 40%;
+    margin-right: 20px;
+}
+
+table {
+    width: 50%;
+    border-collapse: collapse;
+    margin-left: 20px;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+}
+
+th {
+    text-color: #f2f2f2;
+    background-color: #f2f2f2;
+}
+
+button {
+    background-color: #3498db;
+    color: black;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 4px;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+input[type="text"] {
+    width: 80%;
+    padding: 8px;
+    margin: 4px 0;
+    box-sizing: border-box;
+}
+
+label {
+    font-weight: bold;
+}
